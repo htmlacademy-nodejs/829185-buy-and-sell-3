@@ -1,7 +1,7 @@
 # Учебный проект «Куплю. Продам» [![Build status][travis-image]][travis-url]
 
 * Студент: [Chin Wag](https://up.htmlacademy.ru/nodejs/3/user/829185).
-* Наставник: `Неизвестно`.
+* Наставник: `Юрий Кучма`.
 
 ---
 
