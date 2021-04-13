@@ -23,15 +23,15 @@ const correctNounEnding = (number, titles) => {
   const doubles = 20;
   const otherCases = 5;
   const lastTitleIndex = 2;
-  let tileIndex;
+  let titleIndex;
 
   if (number % 100 > units && number % 100 < doubles) {
-    tileIndex = lastTitleIndex;
+    titleIndex = lastTitleIndex;
   } else {
-    tileIndex = cases[(number % 10 < otherCases) ? number % 10 : otherCases];
+    titleIndex = cases[(number % 10 < otherCases) ? number % 10 : otherCases];
   }
 
-  return titles[tileIndex];
+  return titles[titleIndex];
 };
 
 module.exports = {
