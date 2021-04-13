@@ -17,14 +17,26 @@ const getRandomInt = (min = 0, max) => {
 
 const getPictureFileName = (count) => `item${count < 10 ? `0${count}` : count}.jpg`;
 
-const declOfNum = (number, titles) => {
+const correctNounEnding = (number, titles) => {
   const cases = [2, 0, 1, 1, 1, 2];
-  return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+  const units = 4;
+  const doubles = 20;
+  const otherCases = 5;
+  const lastTitleIndex = 2;
+  let tileIndex;
+
+  if (number % 100 > units && number % 100 < doubles) {
+    tileIndex = lastTitleIndex;
+  } else {
+    tileIndex = cases[(number % 10 < otherCases) ? number % 10 : otherCases];
+  }
+
+  return titles[tileIndex];
 };
 
 module.exports = {
   shuffle,
   getRandomInt,
   getPictureFileName,
-  declOfNum
+  correctNounEnding
 };

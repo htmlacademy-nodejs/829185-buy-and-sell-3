@@ -14,7 +14,7 @@ const {
   getRandomInt,
   shuffle,
   getPictureFileName,
-  declOfNum
+  correctNounEnding
 } = require(`../utils`);
 
 const fs = require(`fs`);
@@ -45,7 +45,7 @@ module.exports = {
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
     if (countOffer > MOCKS_RESTRICTIONS.MAX) {
-      console.info(`Не больше ${MOCKS_RESTRICTIONS.MAX} ${declOfNum(MOCKS_RESTRICTIONS.MAX, [`объявление`, `объявления`, `объявлений`])}`);
+      console.info(`Не больше ${MOCKS_RESTRICTIONS.MAX} ${correctNounEnding(MOCKS_RESTRICTIONS.MAX, [`объявление`, `объявления`, `объявлений`])}`);
     } else {
       const content = JSON.stringify(generateOffers(countOffer));
 
