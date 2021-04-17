@@ -19,7 +19,7 @@ const {
   correctNounEnding
 } = require(`../utils`);
 
-const { writeFile } = require(`fs/promises`);
+const {writeFile} = require(`fs/promises`);
 
 const MOCKS_RESTRICTIONS = {
   MIN: 1,
@@ -53,10 +53,11 @@ module.exports = {
 
       try {
         await writeFile(FILE_NAME, content);
-        return console.info(chalk.green(`Operation success. File created.`));
       } catch (e) {
         return console.error(chalk.red(`Can't write data to file... Something went wrong: ${e.message}`));
       }
     }
+
+    return console.info(chalk.green(`Operation success. File created.`));
   }
 };
