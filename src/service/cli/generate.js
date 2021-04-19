@@ -10,6 +10,8 @@ const {
   PIC_RESTRICTIONS
 } = require(`../mocks`);
 
+const chalk = require(`chalk`);
+
 const {
   getRandomInt,
   shuffle,
@@ -17,7 +19,7 @@ const {
   correctNounEnding
 } = require(`../utils`);
 
-const fs = require(`fs`);
+const {writeFile} = require(`fs/promises`);
 
 const MOCKS_RESTRICTIONS = {
   MIN: 1,
@@ -39,23 +41,23 @@ const generateOffers = (count) => (
 
 module.exports = {
   name: `--generate`,
-  run(args) {
+  async run(args) {
 
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
     if (countOffer > MOCKS_RESTRICTIONS.MAX) {
-      console.info(`Не больше ${MOCKS_RESTRICTIONS.MAX} ${correctNounEnding(MOCKS_RESTRICTIONS.MAX, [`объявление`, `объявления`, `объявлений`])}`);
+      console.error(chalk.red(`Не больше ${MOCKS_RESTRICTIONS.MAX} ${correctNounEnding(MOCKS_RESTRICTIONS.MAX, [`объявление`, `объявления`, `объявлений`])}`));
     } else {
       const content = JSON.stringify(generateOffers(countOffer));
 
-      fs.writeFile(FILE_NAME, content, (err) => {
-        if (err) {
-          return console.error(`Can't write data to file...`);
-        }
-
-        return console.info(`Operation success. File created.`);
-      });
+      try {
+        await writeFile(FILE_NAME, content);
+      } catch (e) {
+        return console.error(chalk.red(`Can't write data to file... Something went wrong: ${e.message}`));
+      }
     }
+
+    return console.info(chalk.green(`Operation success. File created.`));
   }
 };
