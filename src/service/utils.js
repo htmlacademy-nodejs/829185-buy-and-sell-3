@@ -34,9 +34,29 @@ const correctNounEnding = (number, titles) => {
   return titles[titleIndex];
 };
 
+const validateOffer = (offer = {}) => {
+  return Array.isArray(offer.category)
+    && typeof offer.description === 'string'
+    && typeof offer.picture === 'string'
+    && typeof offer.title === 'string'
+    && [`offer`, `sale`].includes(offer.type)
+    && Number.isInteger(offer.sum);
+}
+
+const validateOfferAttr = (offerAttr = {}) => {
+  return ['category', 'description', 'picture', 'title', 'type', 'sum'].includes(...Object.keys(offerAttr));
+}
+
+const validateComment = (comment = {}) => {
+  return typeof comment.text === 'string' && comment.text.length > 0;
+};
+
 module.exports = {
   shuffle,
   getRandomInt,
   getPictureFileName,
-  correctNounEnding
+  correctNounEnding,
+  validateOffer,
+  validateOfferAttr,
+  validateComment
 };

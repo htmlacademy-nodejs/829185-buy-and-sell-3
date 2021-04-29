@@ -46,9 +46,9 @@ const generateOffers = (count, titles, categories, sentences, comments) => (
       title: titles[getRandomInt(0, titles.length - 1)],
       type: OFFER_TYPES[Object.keys(OFFER_TYPES)[Math.floor(Math.random() * Object.keys(OFFER_TYPES).length)]],
       sum: getRandomInt(SUM_RESTRICTIONS.MIN, SUM_RESTRICTIONS.MAX),
-      comments: Array(getRandomInt(0, MAXIMUM_COMMENTS)).fill({}).map(() => ({
+      comments: Array(getRandomInt(1, MAXIMUM_COMMENTS)).fill({}).map(() => ({
         id: nanoid(),
-        text: shuffle(comments).slice(1, getRandomInt(0, comments.length)).join(` `)
+        text: shuffle(comments).slice(1, getRandomInt(1, comments.length)).join(` `)
       }))
     })
   ));
