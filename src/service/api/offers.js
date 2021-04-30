@@ -5,7 +5,7 @@ const {HTTP_CODES} = require(`../../constants`);
 const route = new Router();
 const {
   newOfferValidator,
-  newOfferAttrValidator
+  offerAttrValidator
 } = require(`../../validators/offerValidator`);
 const commentsValidator = require(`../../validators/commentsValidator`);
 
@@ -15,7 +15,7 @@ module.exports = (app, offersService, commentsService) => {
   route.get(`/`, (req, res) => res.status(HTTP_CODES.OK).json(offersService.findAll()));
   route.get(`/:offerId`, (req, res) => res.status(HTTP_CODES.OK).json(offersService.findOne(req.params.offerId)));
   route.post(`/`, newOfferValidator, (req, res) => res.status(HTTP_CODES.CREATED).json(offersService.create(req.body)));
-  route.put(`/:offerId`, newOfferAttrValidator, (req, res) => {
+  route.put(`/:offerId`, offerAttrValidator, (req, res) => {
     const id = req.params.offerId;
     const haveOffer = offersService.findOne(id);
 

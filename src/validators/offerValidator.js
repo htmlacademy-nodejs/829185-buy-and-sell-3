@@ -13,7 +13,7 @@ const newOfferValidator = (req, res, next) => {
   next();
 };
 
-const newOfferAttrValidator = (req, res, next) => {
+const offerAttrValidator = (req, res, next) => {
   const newOfferKeys = Object.keys(req.body);
   if (!offerKeys.includes(...newOfferKeys)) {
     res.status(HTTP_CODES.BAD_REQUEST).send(`Bad request`);
@@ -25,5 +25,5 @@ const newOfferAttrValidator = (req, res, next) => {
 
 module.exports = {
   newOfferValidator,
-  newOfferAttrValidator
+  offerAttrValidator
 };

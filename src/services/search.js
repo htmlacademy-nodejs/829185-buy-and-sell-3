@@ -2,7 +2,7 @@
 
 class SearchService {
   constructor(offers) {
-    this.offers = offers;
+    this.offers = offers || [];
   }
 
   findAll(searchText) {

@@ -2,7 +2,7 @@
 
 class CategoriesService {
   constructor(offers) {
-    this.offers = offers;
+    this.offers = offers || [];
   }
 
   findAll() {
