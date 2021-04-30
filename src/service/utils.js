@@ -1,5 +1,7 @@
 'use strict';
 
+const {readFile} = require(`fs/promises`);
+
 const shuffle = (someArray) => {
   for (let i = someArray.length - 1; i > 0; i--) {
     const randomPosition = Math.floor(Math.random() * i);
@@ -34,21 +36,14 @@ const correctNounEnding = (number, titles) => {
   return titles[titleIndex];
 };
 
-const validateOffer = (offer = {}) => {
-  return Array.isArray(offer.category)
-    && typeof offer.description === 'string'
-    && typeof offer.picture === 'string'
-    && typeof offer.title === 'string'
-    && [`offer`, `sale`].includes(offer.type)
-    && Number.isInteger(offer.sum);
-}
-
-const validateOfferAttr = (offerAttr = {}) => {
-  return ['category', 'description', 'picture', 'title', 'type', 'sum'].includes(...Object.keys(offerAttr));
-}
-
-const validateComment = (comment = {}) => {
-  return typeof comment.text === 'string' && comment.text.length > 0;
+const getMocks = async () => {
+  const FILENAME = `mocks.json`;
+  try {
+    const fileContent = await readFile(FILENAME);
+    return JSON.parse(fileContent);
+  } catch (err) {
+    return console.error(`Something went wrong ${err}`);
+  }
 };
 
 module.exports = {
@@ -56,7 +51,5 @@ module.exports = {
   getRandomInt,
   getPictureFileName,
   correctNounEnding,
-  validateOffer,
-  validateOfferAttr,
-  validateComment
+  getMocks
 };
