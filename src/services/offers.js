@@ -26,7 +26,7 @@ class OffersService {
   }
 
   delete(id) {
-    this.offers.splice(this.offers.indexOf(id), 1);
+    this.offers.splice(this.offers.indexOf(this.findOne(id)), 1);
   }
 }
 

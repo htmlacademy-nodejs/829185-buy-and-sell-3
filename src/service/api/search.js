@@ -7,5 +7,8 @@ const offersValidator = require(`../../validators/searchValidator`);
 
 module.exports = (app, service) => {
   app.use(`/search`, route);
-  route.get(`/`, offersValidator, (req, res) => res.status(HTTP_CODES.OK).json(service.findAll(req.query.q)));
+  route.get(`/`, offersValidator, (req, res) => {
+    const response = service.findAll(req.query.q);
+    return res.status(HTTP_CODES.OK).json(response);
+  });
 };

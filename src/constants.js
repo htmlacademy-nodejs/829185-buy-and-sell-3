@@ -6,6 +6,8 @@ const ExitCode = {
   success: 0
 };
 
+const JSON_LIMIT = 100000;
+
 const HTTP_CODES = {
   OK: 200,
   CREATED: 201,
@@ -20,5 +22,6 @@ module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
   ExitCode,
-  HTTP_CODES
+  HTTP_CODES,
+  JSON_LIMIT
 };

@@ -13,8 +13,7 @@ class CommentsService {
   }
 
   delete(offer, commentId) {
-    const comments = offer.comments;
-    comments.splice(comments.indexOf(comments.find(({id}) => id === commentId)), 1);
+    offer.comments = offer.comments.filter(({id}) => id !== commentId);
   }
 }
 

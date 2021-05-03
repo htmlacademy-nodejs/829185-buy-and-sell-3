@@ -37,8 +37,9 @@ const readContent = async (filePath) => {
   }
 };
 
-const generateOffers = (count, titles, categories, sentences, comments) => (
-  Array(count).fill({}).map(() => ({
+const generateOffers = (options) => {
+  const {count, titles, categories, sentences, comments} = options;
+  return Array(count).fill({}).map(() => ({
     id: nanoid(),
     category: [categories[getRandomInt(0, categories.length - 1)]],
     description: shuffle(sentences).slice(1, 5).join(` `),
@@ -51,7 +52,8 @@ const generateOffers = (count, titles, categories, sentences, comments) => (
       text: shuffle(comments).slice(1, getRandomInt(1, comments.length)).join(` `)
     }))
   })
-  ));
+  );
+};
 
 module.exports = {
   name: `--generate`,
@@ -67,7 +69,8 @@ module.exports = {
     if (countOffer > MOCKS_RESTRICTIONS.MAX) {
       console.error(chalk.red(`Не больше ${MOCKS_RESTRICTIONS.MAX} ${correctNounEnding(MOCKS_RESTRICTIONS.MAX, [`объявление`, `объявления`, `объявлений`])}`));
     } else {
-      const content = JSON.stringify(generateOffers(countOffer, titles, categories, sentences, comments));
+      const options = {countOffer, titles, categories, sentences, comments};
+      const content = JSON.stringify(generateOffers(options));
 
       try {
         await writeFile(FILE_NAME, content);

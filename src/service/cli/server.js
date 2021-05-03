@@ -2,12 +2,12 @@
 
 const express = require(`express`);
 const app = express();
-const {HTTP_CODES} = require(`../../constants`);
+const {HTTP_CODES, JSON_LIMIT} = require(`../../constants`);
 const chalk = require(`chalk`);
 const DEFAULT_SERVER_PORT = 3000;
 const routes = require(`../api`);
 
-app.use(express.json());
+app.use(express.json({limit: JSON_LIMIT}));
 app.use(`/api`, routes);
 
 
