@@ -1,5 +1,7 @@
 'use strict';
 
+const {readFile} = require(`fs/promises`);
+
 const shuffle = (someArray) => {
   for (let i = someArray.length - 1; i > 0; i--) {
     const randomPosition = Math.floor(Math.random() * i);
@@ -34,9 +36,20 @@ const correctNounEnding = (number, titles) => {
   return titles[titleIndex];
 };
 
+const getMocks = async () => {
+  const FILENAME = `mocks.json`;
+  try {
+    const fileContent = await readFile(FILENAME);
+    return JSON.parse(fileContent);
+  } catch (err) {
+    return console.error(`Something went wrong ${err}`);
+  }
+};
+
 module.exports = {
   shuffle,
   getRandomInt,
   getPictureFileName,
-  correctNounEnding
+  correctNounEnding,
+  getMocks
 };

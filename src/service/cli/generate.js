@@ -5,10 +5,12 @@ const {
   OFFER_TYPES,
   SUM_RESTRICTIONS,
   PIC_RESTRICTIONS,
-  MOCKS_RESTRICTIONS
+  MOCKS_RESTRICTIONS,
+  MAXIMUM_COMMENTS
 } = require(`../mocks`);
 
 const chalk = require(`chalk`);
+const {nanoid} = require(`nanoid`);
 
 const {
   getRandomInt,
@@ -23,6 +25,7 @@ const FILE_NAME = `mocks.json`;
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
+const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
 const readContent = async (filePath) => {
   try {
@@ -34,16 +37,23 @@ const readContent = async (filePath) => {
   }
 };
 
-const generateOffers = (count, titles, categories, sentences) => (
-  Array(count).fill({}).map(() => ({
-    type: OFFER_TYPES[Object.keys(OFFER_TYPES)[Math.floor(Math.random() * Object.keys(OFFER_TYPES).length)]],
-    title: titles[getRandomInt(0, titles.length - 1)],
+const generateOffers = (options) => {
+  const {count, titles, categories, sentences, comments} = options;
+  return Array(count).fill({}).map(() => ({
+    id: nanoid(),
+    category: [categories[getRandomInt(0, categories.length - 1)]],
     description: shuffle(sentences).slice(1, 5).join(` `),
-    sum: getRandomInt(SUM_RESTRICTIONS.MIN, SUM_RESTRICTIONS.MAX),
     picture: getPictureFileName(getRandomInt(PIC_RESTRICTIONS.MIN, PIC_RESTRICTIONS.MAX)),
-    category: [categories[getRandomInt(0, categories.length - 1)]]
+    title: titles[getRandomInt(0, titles.length - 1)],
+    type: OFFER_TYPES[Object.keys(OFFER_TYPES)[Math.floor(Math.random() * Object.keys(OFFER_TYPES).length)]],
+    sum: getRandomInt(SUM_RESTRICTIONS.MIN, SUM_RESTRICTIONS.MAX),
+    comments: Array(getRandomInt(1, MAXIMUM_COMMENTS)).fill({}).map(() => ({
+      id: nanoid(),
+      text: shuffle(comments).slice(1, getRandomInt(1, comments.length)).join(` `)
+    }))
   })
-  ));
+  );
+};
 
 module.exports = {
   name: `--generate`,
@@ -54,11 +64,13 @@ module.exports = {
     const sentences = await readContent(FILE_SENTENCES_PATH);
     const titles = await readContent(FILE_TITLES_PATH);
     const categories = await readContent(FILE_CATEGORIES_PATH);
+    const comments = await readContent(FILE_COMMENTS_PATH);
 
     if (countOffer > MOCKS_RESTRICTIONS.MAX) {
       console.error(chalk.red(`Не больше ${MOCKS_RESTRICTIONS.MAX} ${correctNounEnding(MOCKS_RESTRICTIONS.MAX, [`объявление`, `объявления`, `объявлений`])}`));
     } else {
-      const content = JSON.stringify(generateOffers(countOffer, titles, categories, sentences));
+      const options = {countOffer, titles, categories, sentences, comments};
+      const content = JSON.stringify(generateOffers(options));
 
       try {
         await writeFile(FILE_NAME, content);

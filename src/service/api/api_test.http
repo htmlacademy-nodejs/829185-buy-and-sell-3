@@ -1,0 +1,82 @@
+GET http://localhost:3000/api/categories
+Content-Type: application/json
+
+###
+
+GET http://localhost:3000/api/search?q=антиквариат
+Content-Type: application/json
+
+###
+PUT http://localhost:3000/api/offers/uhL60S2gK_r1wX1dxe5ke
+Content-Type: application/json
+
+{
+  "sum": 1488
+}
+
+
+###
+
+DELETE http://localhost:3000/api/offers/uhL60S2gK_r1wX1dxe5ke
+Accept: application/json
+
+###
+
+GET http://localhost:3000/api/offers/hI4OxT8mx-h96ItBuvXzo/comments
+Accept: application/json
+
+###
+
+DELETE http://localhost:3000/api/offers/hI4OxT8mx-h96ItBuvXzo/comments/K1-vABfAcl6mCQK-BW22N
+Accept: application/json
+
+###
+
+POST http://localhost:3000/api/offers/1/comments/
+Content-Type: application/json
+
+{
+  "text": "aaaaaaaaaaaa"
+}
+
+###
+
+POST http://localhost:3000/api/offers/hI4OxT8mx-h96ItBuvXzo/comments/
+Content-Type: application/json
+
+{
+  "text": "aaaaaaaaaaaa"
+}
+
+###
+
+POST http://localhost:3000/api/offers/1/comments/
+Content-Type: application/json
+
+{
+  "text": "aaaaaaaaaaaa"
+}
+
+###
+
+DELETE http://localhost:3000/api/offers/hI4OxT8mx-h96ItBuvXzo/comments/K1-vABfAcl6mCQK-BW22N
+Accept: application/json
+
+###
+
+GET http://localhost:3000/api/offers/hI4OxT8mx-h96ItBuvXzo/comments
+Accept: application/json
+
+###
+
+DELETE http://localhost:3000/api/offers/uhL60S2gK_r1wX1dxe5ke
+Accept: application/json
+
+###
+
+PUT http://localhost:3000/api/offers/uhL60S2gK_r1wX1dxe5ke
+Content-Type: application/json
+
+{
+  "sum": 1488
+}
