@@ -1,27 +1,25 @@
 'use strict';
 
 const {Router} = require(`express`);
-const offers = require(`../api/offers`);
-const search = require(`../api/search`);
 const categories = require(`../api/categories`);
-
-const {getMocks} = require(`../utils`);
+const offer = require(`../api/offers`);
+const search = require(`../api/search`);
 
 const {
-  SearchService,
   CategoriesService,
+  SearchService,
   OffersService,
-  CommentsService
+  CommentsService,
 } = require(`../../services`);
 
 const app = new Router();
 
-(async () => {
-  const mockData = await getMocks();
-
-  offers(app, new OffersService(mockData), new CommentsService());
-  search(app, new SearchService(mockData));
+const initAPI = (mockData) => {
   categories(app, new CategoriesService(mockData));
-})();
+  search(app, new SearchService(mockData));
+  offer(app, new OffersService(mockData), new CommentsService());
 
-module.exports = app;
+  return app;
+};
+
+module.exports = initAPI;

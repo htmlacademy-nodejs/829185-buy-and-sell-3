@@ -19,9 +19,14 @@ module.exports = (app, offersService, commentsService) => {
   });
   route.get(`/:offerId`, (req, res) => {
     const {offerId} = req.params;
-    const offer = offersService.findOne(offerId);
+    const haveOffer = offersService.findOne(offerId);
 
-    return res.status(HTTP_CODES.OK).json(offer);
+    if (!haveOffer) {
+      return res.status(HTTP_CODES.BAD_REQUEST)
+        .send(`Can not update, no such id: ${offerId} in offers`);
+    }
+
+    return res.status(HTTP_CODES.OK).json(haveOffer);
   });
   route.post(`/`, newOfferValidator, (req, res) => {
     const offer = offersService.create(req.body);
@@ -56,6 +61,10 @@ module.exports = (app, offersService, commentsService) => {
   route.get(`/:offerId/comments`, (req, res) => {
     const {offerId} = req.params;
     const offer = offersService.findOne(offerId);
+
+    if (!offer) {
+      return res.status(HTTP_CODES.BAD_REQUEST).send(`No offer with such id: ${offerId}`);
+    }
     const comments = commentsService.findAll(offer);
 
     return res.status(HTTP_CODES.OK).json(comments);
@@ -63,10 +72,15 @@ module.exports = (app, offersService, commentsService) => {
   route.delete(`/:offerId/comments/:commentId`, (req, res) => {
     const {offerId, commentId} = req.params;
     const offer = offersService.findOne(offerId);
-    const haveComment = offer.comments.some(({id}) => id === commentId);
 
+    if (!offer) {
+      return res.status(HTTP_CODES.BAD_REQUEST)
+        .send(`Can not delete, no such id: ${offerId} in offers`);
+    }
+
+    const haveComment = offer.comments.some(({id}) => id === commentId);
     if (!haveComment) {
-      return res.status(HTTP_CODES.NOT_FOUND)
+      return res.status(HTTP_CODES.BAD_REQUEST)
         .send(`Can not delete, no such comment with id: ${commentId} in offer id: ${offerId}`);
     }
     commentsService.delete(offer, commentId);
@@ -85,6 +99,6 @@ module.exports = (app, offersService, commentsService) => {
 
     const newComment = commentsService.create(offer, req.body);
 
-    return res.status(HTTP_CODES.OK).json(newComment);
+    return res.status(HTTP_CODES.CREATED).json(newComment);
   });
 };

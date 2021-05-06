@@ -1,3 +1,8 @@
+GET http://localhost:3000/api/offers/1
+Accept: application/json
+
+###
+
 GET http://localhost:3000/api/categories
 Content-Type: application/json
 
@@ -22,7 +27,7 @@ Accept: application/json
 
 ###
 
-GET http://localhost:3000/api/offers/hI4OxT8mx-h96ItBuvXzo/comments
+GET http://localhost:3000/api/offers/hI4OxT8mx-1/comments
 Accept: application/json
 
 ###
