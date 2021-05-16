@@ -2,8 +2,16 @@
 
 const {Router} = require(`express`);
 const myRouter = new Router();
+const api = require(`../api`).getAPI();
 
-myRouter.get(`/`, (req, res) => res.send(`/my`));
-myRouter.get(`/comments`, (req, res) => res.send(`/my/comments`));
+myRouter.get(`/`, async (req, res) => {
+  const proposals = await api.getOffers();
+  res.render(`my-tickets`, {proposals});
+});
+myRouter.get(`/comments`, async (req, res) => {
+  let proposals = await api.getOffers();
+  proposals = proposals.filter(({comments}) => comments.length);
+  res.render(`comments`, {proposals: proposals.slice(0, 3)});
+});
 
 module.exports = myRouter;

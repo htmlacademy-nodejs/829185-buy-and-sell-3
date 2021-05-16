@@ -32,12 +32,17 @@ module.exports = {
       res.status(HTTP_CODES.NOT_FOUND).send(`Not found`);
     });
 
-    app.listen(DEFAULT_SERVER_PORT, (err) => {
-      if (err) {
-        return logger.error(`Something went wrong with creating a server`, err);
-      }
+    try {
+      app.listen(DEFAULT_SERVER_PORT, (err) => {
+        if (err) {
+          return logger.error(`Something went wrong with creating a server`, err);
+        }
 
-      return logger.info(`Waiting for connections on port: ${serverPort}`);
-    });
+        return logger.info(`Waiting for connections on port: ${serverPort}`);
+      });
+    } catch (err) {
+      logger.error(`An error occurred: ${err.message}`);
+      process.exit(1);
+    }
   }
 };
