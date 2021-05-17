@@ -11,12 +11,10 @@ const {
   mainRoutes,
   offersRoutes
 } = require('./routes');
-const multer = require('multer');
-const upload = multer();
 
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 app.use(express.static(path.resolve(__dirname, UPLOAD_DIR)));
-app.use(upload.array());
+
 
 app.use(`/offers`, offersRoutes);
 app.use(`/my`, myRoutes);
