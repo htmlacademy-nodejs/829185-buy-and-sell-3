@@ -1,3 +1,4 @@
+'use strict';
 const axios = require(`axios`);
 
 class API {
@@ -15,7 +16,7 @@ class API {
   }
 
   getOffers() {
-    return this._load('/offers');
+    return this._load(`/offers`);
   }
 
   getOffer(id) {
@@ -27,7 +28,7 @@ class API {
   }
 
   async getCategories() {
-    return this._load('/categories');
+    return this._load(`/categories`);
   }
 
   async createOffer(data) {

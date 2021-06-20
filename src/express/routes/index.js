@@ -1,3 +1,5 @@
+'use strict';
+
 const myRoutes = require(`./my`);
 const mainRoutes = require(`./main`);
 const offersRoutes = require(`./offers`);
