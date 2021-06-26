@@ -9,7 +9,8 @@ module.exports = (app, service) => {
   app.use(`/search`, route);
 
   route.get(`/`, searchValidator, (req, res) => {
-    const response = service.findAll(req.query.query);
+    const response = service.findAll(req.query.search);
+
 
     return res.status(HTTP_CODES.OK).json(response);
   });
