@@ -15,3 +15,7 @@ logs/
 
 # Папка с собранными файлами проекта
 build/
+
+src/express/upload/img/*.*
+
+!src/express/upload/img/.gitkeep

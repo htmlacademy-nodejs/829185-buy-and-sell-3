@@ -11,7 +11,7 @@ const {
 
 const routes = initAPI(mockOffers);
 
-const apiSearch = `/api/search?q=`;
+const apiSearch = `/api/search?search=`;
 
 app.use(`/api`, routes);
 

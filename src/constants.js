@@ -2,8 +2,8 @@
 
 const DEFAULT_COMMAND = `--help`;
 const USER_ARGV_INDEX = 2;
-const ExitCode = {
-  success: 0
+const EXIT_CODES = {
+  SUCCESS: 0
 };
 
 const JSON_LIMIT = 100000;
@@ -18,10 +18,13 @@ const HTTP_CODES = {
   INTERNAL_SERVER_ERROR: 500
 };
 
+const DEFAULT_API_PORT = 3000;
+
 module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
-  ExitCode,
+  EXIT_CODES,
   HTTP_CODES,
-  JSON_LIMIT
+  JSON_LIMIT,
+  DEFAULT_API_PORT
 };

@@ -1,7 +1,7 @@
 'use strict';
 
 const logger = require(`pino`)({
-  name: `pino-and-express`,
+  name: `base-logger`,
   level: process.env.LOG_LEVEL || `info`
 });
 
