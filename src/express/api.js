@@ -1,7 +1,7 @@
 'use strict';
 const axios = require(`axios`);
 const TIMEOUT = 1000;
-const { DEFAULT_API_PORT } = require(`../constants`);
+const {DEFAULT_API_PORT} = require(`../constants`);
 
 class API {
 
