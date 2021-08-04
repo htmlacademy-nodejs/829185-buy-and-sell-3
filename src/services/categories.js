@@ -1,16 +1,13 @@
 'use strict';
 
 class CategoriesService {
-  constructor(offers) {
-    this.offers = offers || [];
+  constructor(sequelize) {
+    this._Category = sequelize.models.Category;
   }
 
   findAll() {
-    let categories = [];
-    this.offers.forEach((item) => item.category.length && item.category.forEach((category) => !categories.includes(category) && categories.push(category)));
-    return categories;
+    return this._Category.findAll({raw: true});
   }
-
 }
 
 module.exports = CategoriesService;

@@ -12,14 +12,14 @@ const commentsValidator = require(`../../validators/commentsValidator`);
 module.exports = (app, offersService, commentsService) => {
   app.use(`/offers`, route);
 
-  route.get(`/`, (req, res) => {
-    const result = offersService.findAll();
-
-    return res.status(HTTP_CODES.OK).json(result);
+  route.get(`/`, async (req, res) => {
+    const {comments} = req.query;
+    let offers = await offerService.findAll(comments);
+    res.status(HTTP_CODES.OK).json(offers);
   });
-  route.get(`/:offerId`, (req, res) => {
+  route.get(`/:offerId`, async (req, res) => {
     const {offerId} = req.params;
-    const haveOffer = offersService.findOne(offerId);
+    const haveOffer = await offersService.findOne(offerId);
 
     if (!haveOffer) {
       return res.status(HTTP_CODES.BAD_REQUEST)
@@ -28,50 +28,50 @@ module.exports = (app, offersService, commentsService) => {
 
     return res.status(HTTP_CODES.OK).json(haveOffer);
   });
-  route.post(`/`, newOfferValidator, (req, res) => {
-    const offer = offersService.create(req.body);
+  route.post(`/`, newOfferValidator, async (req, res) => {
+    const offer = await offersService.create(req.body);
 
     return res.status(HTTP_CODES.CREATED).json(offer);
   });
-  route.put(`/:offerId`, offerAttrValidator, (req, res) => {
+  route.put(`/:offerId`, offerAttrValidator, async (req, res) => {
     const {offerId} = req.params;
-    const haveOffer = offersService.findOne(offerId);
+    const haveOffer = await offersService.findOne(offerId);
 
     if (!haveOffer) {
       return res.status(HTTP_CODES.NOT_FOUND)
         .send(`Can not update, no such id: ${offerId} in offers`);
     }
 
-    const newOffer = offersService.update(offerId, req.body);
+    const newOffer = await offersService.update(offerId, req.body);
     return res.status(HTTP_CODES.OK).json(newOffer);
   });
-  route.delete(`/:offerId`, (req, res) => {
+  route.delete(`/:offerId`, async (req, res) => {
     const {offerId} = req.params;
-    const haveOffer = offersService.findOne(offerId);
+    const haveOffer = await offersService.findOne(offerId);
 
     if (!haveOffer) {
       return res.status(HTTP_CODES.NOT_FOUND)
         .send(`Can not delete, no such id: ${offerId} in offers`);
     }
 
-    offersService.delete(offerId);
+    await offersService.delete(offerId);
 
     return res.status(HTTP_CODES.OK).send(`Successfully deleted id: ${offerId}`);
   });
-  route.get(`/:offerId/comments`, (req, res) => {
+  route.get(`/:offerId/comments`, async (req, res) => {
     const {offerId} = req.params;
-    const offer = offersService.findOne(offerId);
+    const offer = await offersService.findOne(offerId);
 
     if (!offer) {
       return res.status(HTTP_CODES.BAD_REQUEST).send(`No offer with such id: ${offerId}`);
     }
-    const comments = commentsService.findAll(offer);
+    const comments = await commentsService.findAll(offer);
 
     return res.status(HTTP_CODES.OK).json(comments);
   });
-  route.delete(`/:offerId/comments/:commentId`, (req, res) => {
+  route.delete(`/:offerId/comments/:commentId`, async (req, res) => {
     const {offerId, commentId} = req.params;
-    const offer = offersService.findOne(offerId);
+    const offer = await offersService.findOne(offerId);
 
     if (!offer) {
       return res.status(HTTP_CODES.BAD_REQUEST)
@@ -83,21 +83,21 @@ module.exports = (app, offersService, commentsService) => {
       return res.status(HTTP_CODES.BAD_REQUEST)
         .send(`Can not delete, no such comment with id: ${commentId} in offer id: ${offerId}`);
     }
-    commentsService.delete(offer, commentId);
+    await commentsService.delete(offer, commentId);
 
     return res.status(HTTP_CODES.OK).send(`Comment with id: ${commentId} was successfully deleted from offer id: ${offerId}`);
 
   });
-  route.post(`/:offerId/comments`, commentsValidator, (req, res) => {
+  route.post(`/:offerId/comments`, commentsValidator, async (req, res) => {
     const {offerId} = req.params;
-    const offer = offersService.findOne(offerId);
+    const offer = await offersService.findOne(offerId);
 
     if (!offer) {
       return res.status(HTTP_CODES.NOT_FOUND)
         .send(`Can not add comment, no such id: ${offerId} in offers`);
     }
 
-    const newComment = commentsService.create(offer, req.body);
+    const newComment = await commentsService.create(offer, req.body);
 
     return res.status(HTTP_CODES.CREATED).json(newComment);
   });

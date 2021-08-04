@@ -4,6 +4,8 @@ const {Router} = require(`express`);
 const categories = require(`../api/categories`);
 const offer = require(`../api/offers`);
 const search = require(`../api/search`);
+const sequelize = require(`../lib/sequelize`);
+const defineModels = require(`../models`);
 
 const {
   CategoriesService,
@@ -14,12 +16,12 @@ const {
 
 const app = new Router();
 
-const initAPI = (mockData) => {
-  categories(app, new CategoriesService(mockData));
-  search(app, new SearchService(mockData));
-  offer(app, new OffersService(mockData), new CommentsService());
+defineModels(sequelize);
 
-  return app;
-};
+(() => {
+  categories(app, new CategoriesService(sequelize));
+  search(app, new SearchService(sequelize));
+  offer(app, new OffersService(sequelize), new CommentsService(sequelize));
+})();
 
-module.exports = initAPI;
+module.exports = app;

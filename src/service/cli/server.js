@@ -9,9 +9,6 @@ const {
 const DEFAULT_SERVER_PORT = 3000;
 const initAPI = require(`../api`);
 const {
-  getMocks
-} = require(`../utils`);
-const {
   getLogger
 } = require(`../../logger/logger`);
 const logger = getLogger();
@@ -43,8 +40,7 @@ module.exports = {
 
     const [customPort] = args;
     const serverPort = Number.parseInt(customPort, 10) || DEFAULT_SERVER_PORT;
-    const mockData = await getMocks();
-    const routes = initAPI(mockData);
+    const routes = initAPI(sequelize);
     app.use(`/api`, routes);
     app.use((req, res) => {
       logger.error(req.path);

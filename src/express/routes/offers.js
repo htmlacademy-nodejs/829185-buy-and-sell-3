@@ -33,7 +33,7 @@ offersRouter.post(`/add`,
         type: body.action,
         description: body.comment,
         title: body[`ticket-name`],
-        category: body.category
+        categories: body.category
       };
 
       try {

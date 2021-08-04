@@ -1,33 +1,47 @@
-'use strict';
-const {nanoid} = require(`nanoid`);
+"use strict";
 
-class OffersService {
-  constructor(offers) {
-    this.offers = offers || [];
+const Alias = require(`../service/models/alias`);
+
+class OfferService {
+  constructor(sequelize) {
+    this._Offer = sequelize.models.Offer;
+    this._Comment = sequelize.models.Comment;
+    this._Category = sequelize.models.Category;
   }
 
-  findAll() {
-    return this.offers;
+  async create(offerData) {
+    const offer = await this._Offer.create(offerData);
+    await offer.addCategories(offerData.categories);
+    return offer.get();
   }
 
-  findOne(offerId) {
-    return this.offers.find(({id}) => id === offerId);
+  async drop(id) {
+    const deletedRows = await this._Offer.destroy({
+      where: {id}
+    });
+    return !!deletedRows;
   }
 
-  create(offer) {
-    offer.id = nanoid();
-    this.offers.push(offer);
-    return offer;
+  async findAll(needComments) {
+    const include = [Alias.CATEGORIES];
+    if (needComments) {
+      include.push(Alias.COMMENTS);
+    }
+    const offers = await this._Offer.findAll({include});
+    return offers.map((item) => item.get());
   }
 
-  update(id, offerAttr) {
-    Object.assign(this.findOne(id), offerAttr);
-    return this.findOne(id);
+  findOne(id) {
+    return this._Offer.findByPk(id, {include: [Alias.CATEGORIES]});
   }
 
-  delete(id) {
-    this.offers.splice(this.offers.indexOf(this.findOne(id)), 1);
+  async update(id, offer) {
+    const [affectedRows] = await this._Offer.update(offer, {
+      where: {id}
+    });
+    return !!affectedRows;
   }
+
 }
 
-module.exports = OffersService;
+module.exports = OfferService;
