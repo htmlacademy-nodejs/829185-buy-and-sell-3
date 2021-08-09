@@ -5,8 +5,15 @@ const mainRouter = new Router();
 const api = require(`../api`).getAPI();
 
 mainRouter.get(`/`, async (req, res) => {
-  const proposals = await api.getOffers();
-  res.render(`main`, {proposals});
+  const [
+    offers,
+    categories
+  ] = await Promise.all([
+    api.getOffers(),
+    api.getCategories(true)
+  ]);
+
+  res.render(`main`, {proposals: offers, categories});
 });
 mainRouter.get(`/login`, (req, res) => res.render(`login.pug`));
 mainRouter.get(`/search`, async (req, res) => {
@@ -14,7 +21,6 @@ mainRouter.get(`/search`, async (req, res) => {
   try {
     const {search} = req.query;
     const results = await api.search(search);
-
     res.render(`search-result`, {
       results
     });

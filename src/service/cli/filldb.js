@@ -78,8 +78,8 @@ module.exports = {
       console.error(chalk.red(`Не больше ${MOCKS_RESTRICTIONS.MAX} ${correctNounEnding(MOCKS_RESTRICTIONS.MAX, [`объявление`, `объявления`, `объявлений`])}`));
     } else {
       const options = {countOffer, titles, categories, sentences, comments};
-
       const offers = generateOffers(options);
+
       await initDB(sequelize, {categories, offers});
     }
 

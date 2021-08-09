@@ -6,6 +6,7 @@ const api = require(`../api`).getAPI();
 
 myRouter.get(`/`, async (req, res) => {
   const proposals = await api.getOffers();
+
   res.render(`my-tickets`, {proposals});
 });
 myRouter.get(`/comments`, async (req, res) => {

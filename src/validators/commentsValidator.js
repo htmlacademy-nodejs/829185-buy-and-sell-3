@@ -1,7 +1,7 @@
 'use strict';
 
 const {HTTP_CODES} = require(`../constants`);
-const commentKeys = [`text`];
+const commentKeys = [`name`];
 
 module.exports = (req, res, next) => {
   const newCommentKeys = Object.keys(req.body);

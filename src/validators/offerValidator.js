@@ -1,7 +1,7 @@
 'use strict';
 
 const {HTTP_CODES} = require(`../constants`);
-const offerKeys = [`category`, `description`, `picture`, `title`, `type`, `sum`];
+const offerKeys = [`categories`, `description`, `picture`, `title`, `type`, `sum`];
 
 const newOfferValidator = (req, res, next) => {
   const newOfferKeys = Object.keys(req.body);

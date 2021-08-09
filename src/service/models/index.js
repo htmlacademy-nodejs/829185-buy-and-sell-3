@@ -22,6 +22,6 @@ const define = (sequelize) => {
   Category.hasMany(OfferCategory, {as: Alias.OFFER_CATEGORIES});
 
   return {Category, Comment, Offer, OfferCategory};
-}
+};
 
 module.exports = define;

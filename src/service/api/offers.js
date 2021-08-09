@@ -14,7 +14,8 @@ module.exports = (app, offersService, commentsService) => {
 
   route.get(`/`, async (req, res) => {
     const {comments} = req.query;
-    let offers = await offerService.findAll(comments);
+    let offers = await offersService.findAll(comments);
+
     res.status(HTTP_CODES.OK).json(offers);
   });
   route.get(`/:offerId`, async (req, res) => {
@@ -54,7 +55,7 @@ module.exports = (app, offersService, commentsService) => {
         .send(`Can not delete, no such id: ${offerId} in offers`);
     }
 
-    await offersService.delete(offerId);
+    await offersService.drop(offerId);
 
     return res.status(HTTP_CODES.OK).send(`Successfully deleted id: ${offerId}`);
   });
@@ -65,7 +66,7 @@ module.exports = (app, offersService, commentsService) => {
     if (!offer) {
       return res.status(HTTP_CODES.BAD_REQUEST).send(`No offer with such id: ${offerId}`);
     }
-    const comments = await commentsService.findAll(offer);
+    const comments = await commentsService.findAll(offer.id);
 
     return res.status(HTTP_CODES.OK).json(comments);
   });
@@ -78,12 +79,14 @@ module.exports = (app, offersService, commentsService) => {
         .send(`Can not delete, no such id: ${offerId} in offers`);
     }
 
-    const haveComment = offer.comments.some(({id}) => id === commentId);
+    const commentsByIdOffer = await commentsService.findAll(offer.id);
+    const haveComment = commentsByIdOffer.some(({id}) => id === +commentId);
+
     if (!haveComment) {
       return res.status(HTTP_CODES.BAD_REQUEST)
         .send(`Can not delete, no such comment with id: ${commentId} in offer id: ${offerId}`);
     }
-    await commentsService.delete(offer, commentId);
+    await commentsService.destroy(offer.id, commentId);
 
     return res.status(HTTP_CODES.OK).send(`Comment with id: ${commentId} was successfully deleted from offer id: ${offerId}`);
 
@@ -97,7 +100,7 @@ module.exports = (app, offersService, commentsService) => {
         .send(`Can not add comment, no such id: ${offerId} in offers`);
     }
 
-    const newComment = await commentsService.create(offer, req.body);
+    const newComment = await commentsService.create(offer.id, req.body);
 
     return res.status(HTTP_CODES.CREATED).json(newComment);
   });

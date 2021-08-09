@@ -15,10 +15,10 @@ block content
                 .ticket-card__img
                   img(src=`/img/${result.picture}` alt="Изображение товара")
                 .ticket-card__info
-                  span.ticket-card__label #{result.type === `OFFER` ? `Куплю` : `Продам`}
+                  span.ticket-card__label #{result.type === `offer` ? `Куплю` : `Продам`}
                   .ticket-card__categories
                     each category in result.categories
-                      a(href="#") #{category}
+                      a(href="#") #{category.name}
                   .ticket-card__header
                     h3.ticket-card__title
                       a(href="#") #{result.title}

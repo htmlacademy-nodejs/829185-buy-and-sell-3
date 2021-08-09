@@ -1,8 +1,14 @@
 'use strict';
 
+const express = require(`express`);
 const request = require(`supertest`);
-const {app} = require(`../cli/server`);
-const initAPI = require(`../api`);
+const Sequelize = require(`sequelize`);
+
+const initDB = require(`../lib/init-db`);
+const offer = require(`./offers`);
+const OffersDataService = require(`../../services/offers`);
+const CommentsDataService = require(`../../services/comments`);
+
 const {HTTP_CODES} = require(`../../constants`);
 
 const {
@@ -13,113 +19,166 @@ const {
   validOfferNewAttr,
   inValidOfferNewAttr,
   validNewComment,
-  invalidNewComment
+  invalidNewComment,
+  mockCategories
 } = require(`./test_mocks`);
 
-const routes = initAPI(mockOffers);
+const createAPI = async () => {
+  const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
+  const categories = mockCategories.map(({name}) => name);
+  await initDB(mockDB, {categories, offers: mockOffers});
+  const app = express();
+  app.use(express.json());
+  offer(app, new OffersDataService(mockDB), new CommentsDataService(mockDB));
 
-const apiOffers = `/api/offers`;
-
-app.use(`/api`, routes);
+  return app;
+};
 
 describe(`Offers API end-points`, () => {
-  test(`When get /api/offers response code should be 200`, async () => {
-    const res = await request(app).get(`${apiOffers}`);
-    expect(res.statusCode).toBe(HTTP_CODES.OK);
+
+  describe(`When post /offers`, () => {
+    let response;
+    let app;
+
+    beforeAll(async () => {
+      app = await createAPI();
+      response = await request(app)
+        .post(`/offers`)
+        .send(newValidOffer);
+    });
+
+    it(`With valid offer, response code should be 201`, () => expect(response.statusCode).toBe(HTTP_CODES.CREATED));
+    it(`With valid offer, response body.title equals to mock`, () => expect(response.body.title).toEqual(newValidOffer.title));
+    it(`With invalid offer, response code should be 400`, async () => {
+      response = await request(app).post(`/offers`).send(newInvalidOffer);
+
+      expect(response.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
+    });
   });
 
-  test(`When get /api/offers response body should be equal to mocks`, async () => {
-    const res = await request(app).get(`${apiOffers}`);
-    expect(res.body).toEqual(mockOffers);
+  describe(`When get /offers`, () => {
+    let response;
+
+    beforeAll(async () => {
+      const app = await createAPI();
+      response = await request(app)
+        .get(`/offers`);
+    });
+
+    it(`Response code should be 200`, () => expect(response.statusCode).toBe(HTTP_CODES.OK));
+    it(`Returns a list of 3 offers`, () => expect(response.body.length).toBe(3));
+    it(`First offer's id equals 1`, () => expect(response.body[0].id).toBe(1));
   });
 
-  test(`When get /api/offers/:offerId with valid offer id, response code should be 200`, async () => {
-    const res = await request(app).get(`${apiOffers}/PJFByiybVqeNBxWLqm3Li`);
-    expect(res.statusCode).toBe(HTTP_CODES.OK);
+  describe(`When get /offers/:offerId`, () => {
+    let response;
+
+    beforeAll(async () => {
+      const app = await createAPI();
+      response = await request(app)
+        .get(`/offers/1`);
+    });
+
+    it(`Response code should be 200`, () => expect(response.statusCode).toBe(HTTP_CODES.OK));
+    it(`Response offer title should be equal to mocks`, () => expect(response.body.title).toEqual(mockOffers[0].title));
   });
 
-  test(`When get /api/offers/:offerId response obj should be with a requesting id`, async () => {
-    const res = await request(app).get(`${apiOffers}/PJFByiybVqeNBxWLqm3Li`);
-    expect(res.body).toEqual(mockOffers[0]);
+  it(`When get /offers with invalid offer id, response code should be 400`, async () => {
+    const app = await createAPI();
+    let response = await request(app).get(`/offers/NOT_EXISTING_ID`);
+
+    expect(response.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
   });
 
-  test(`When get /api/offers/:offerId and requesting id not in the mocks, response code should be 400`, async () => {
-    const res = await request(app).get(`${apiOffers}/not_in_mocks`);
-    expect(res.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
+  describe(`When put /offers/:id to update offer with valid attr`, () => {
+    let response;
+
+    beforeAll(async () => {
+      const app = await createAPI();
+      response = await request(app)
+        .put(`/offers/1`)
+        .send(validOfferNewAttr);
+    });
+
+    it(`Response code should be 200`, () => expect(response.statusCode).toBe(HTTP_CODES.OK));
+    it(`Response.title should be equal to mock title`, () => expect(response.body).toBeTruthy());
   });
 
-  test(`When post /api/offers with new valid offer, response code should be 201`, async () => {
-    const res = await request(app).post(`${apiOffers}`).send(newValidOffer);
-    expect(res.statusCode).toBe(HTTP_CODES.CREATED);
+  describe(`When put /offers/:id `, () => {
+    let response; let app;
+
+    beforeAll(async () => {
+      app = await createAPI();
+      response = await request(app)
+        .put(`/offers/not_existing_id`)
+        .send(notExistingOffer);
+    });
+
+    it(`to update not existing offer, response code should be 400`, async () => {
+      expect(response.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
+    });
+
+    it(`to update existing offer with invalid attr, response code should be 400`, async () => {
+      response = await request(app).put(`/offers/1`).send(inValidOfferNewAttr);
+
+      expect(response.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
+    });
   });
 
-  test(`When post /api/offers with new invalid offer, response code should be 400`, async () => {
-    const res = await request(app).post(`${apiOffers}`).send(newInvalidOffer);
-    expect(res.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
+  describe(`When delete /offers/:id`, () => {
+    let app; let response;
+
+    beforeAll(async () => {
+      app = await createAPI();
+      response = await request(app).delete(`/offers/1`);
+    });
+
+    it(`Response code should be 200`, () => expect(response.statusCode).toBe(HTTP_CODES.OK));
+
+    it(`Second try to delete same id should return 404`, async () => {
+      response = await request(app).delete(`/offers/1`);
+
+      expect(response.statusCode).toBe(HTTP_CODES.NOT_FOUND);
+    });
   });
 
-  test(`When put /api/offers/:id to update offer with valid attr, response code should be 200`, async () => {
-    const res = await request(app).put(`${apiOffers}/PJFByiybVqeNBxWLqm3Li`).send(validOfferNewAttr);
-    expect(res.statusCode).toBe(HTTP_CODES.OK);
+  describe(`When delete /offers/:offerId/comments/:commentId`, () => {
+    let app; let response;
+
+    beforeAll(async () => {
+      app = await createAPI();
+      response = await request(app).delete(`/offers/1/comments/1`);
+    });
+
+    it(`Response code should be 200`, async () => expect(response.statusCode).toBe(HTTP_CODES.OK));
+
+    it(`Not existing offerId, response code should be 400`, async () => {
+      response = await request(app).delete(`/offers/NOT_EXISTING)OFFER/comments/1`);
+
+      expect(response.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
+    });
+
+    it(`Not existing commentId, response code should be 400`, async () => {
+      response = await request(app).delete(`/offers/1/comments/NOT_EXISTING)OFFER`);
+
+      expect(response.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
+    });
   });
 
-  test(`When put /api/offers/:id to update offer with valid attr, this offer should change this attr`, async () => {
-    const res = await request(app).put(`${apiOffers}/PJFByiybVqeNBxWLqm3Li`).send(validOfferNewAttr);
-    expect(res.body.title).toBe(validOfferNewAttr.title);
-  });
+  describe(`When post /offers/:offerId/comments`, () => {
+    let app; let response;
 
-  test(`When put /api/offers/:id to update offer with invalid attr, response code should be 400`, async () => {
-    const res = await request(app).put(`${apiOffers}/PJFByiybVqeNBxWLqm3Li`).send(inValidOfferNewAttr);
-    expect(res.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
-  });
+    beforeAll(async () => {
+      app = await createAPI();
+      response = await request(app).post(`/offers/1/comments`).send(validNewComment);
+    });
 
-  test(`When put /api/offers/:id to update not existing offer, response code should be 400`, async () => {
-    const res = await request(app).put(`${apiOffers}/not_existing_id`).send(notExistingOffer);
-    expect(res.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
-  });
+    it(`With valid comment, response code should be 201`, () => expect(response.statusCode).toBe(HTTP_CODES.CREATED));
 
-  test(`When delete /api/offers/:id to delete offer, response code should be 200`, async () => {
-    const res = await request(app).delete(`${apiOffers}/vDaoVd8iNfcT28K3Gl7PO`);
-    expect(res.statusCode).toBe(HTTP_CODES.OK);
-  });
+    it(`With invalid comment, response code should be 400`, async () => {
+      response = await request(app).post(`/offers/1/comments`).send(invalidNewComment);
 
-  test(`When delete /api/offers/:id to delete offer, response code should be 400`, async () => {
-    const res = await request(app).delete(`${apiOffers}/not_existing_id`);
-    expect(res.statusCode).toBe(HTTP_CODES.NOT_FOUND);
-  });
-
-  test(`When get /api/offers/:id/comments, response code should be 200`, async () => {
-    const res = await request(app).delete(`${apiOffers}/PJFByiybVqeNBxWLqm3Li`);
-    expect(res.statusCode).toBe(HTTP_CODES.OK);
-  });
-
-  test(`When get /api/offers/:id/comments not existing id, response code should be 400`, async () => {
-    const res = await request(app).get(`${apiOffers}/not_existing/comments`);
-    expect(res.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
-  });
-
-  test(`When delete /api/offers/:offerId/comments/:commentId, response code should be 200`, async () => {
-    const res = await request(app).delete(`${apiOffers}/-UC_7IhPJXSRbTMuOm1zz/comments/gNh-AAh9YoFJ2TJhpqnoX`);
-    expect(res.statusCode).toBe(HTTP_CODES.OK);
-  });
-
-  test(`When delete /api/offers/:offerId/comments/:commentId not existing offerId, response code should be 400`, async () => {
-    const res = await request(app).delete(`${apiOffers}/not_existing_offer_id/comments/SYkbVLBncVyNQMupmjZI-`);
-    expect(res.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
-  });
-
-  test(`When delete /api/offers/:offerId/comments/:commentId not existing commentId, response code should be 400`, async () => {
-    const res = await request(app).delete(`${apiOffers}/PJFByiybVqeNBxWLqm3Li/comments/not_existing_comment_id`);
-    expect(res.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
-  });
-
-  test(`When post /api/offers/:offerId/comments add valid comment, response code should be 201`, async () => {
-    const res = await request(app).post(`${apiOffers}/-UC_7IhPJXSRbTMuOm1zz/comments`).send(validNewComment);
-    expect(res.statusCode).toBe(HTTP_CODES.CREATED);
-  });
-
-  test(`When post /api/offers/:offerId/comments add invalid comment, response code should be 400`, async () => {
-    const res = await request(app).post(`${apiOffers}/PJFByiybVqeNBxWLqm3Li/comments`).send(invalidNewComment);
-    expect(res.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
+      expect(response.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
+    });
   });
 });

@@ -9,20 +9,20 @@ block content
           a.tickets-list__btn.btn.btn--big(href='#')
             span Новая публикация
         ul
-          each offer in proposals
+          each proposal in proposals
             li.tickets-list__item.js-card
               .ticket-card.ticket-card--color06
                 .ticket-card__img
-                  img(src=`/img/${offer.picture}` srcset=`/img/${offer.picture} 2x` alt=offer.title)
+                  img(src=`/img/${proposal.picture}` srcset=`/img/${proposal.picture} 2x` alt=proposal.title)
                 .ticket-card__info
-                  span.ticket-card__label #{offer.type === `offer` ? `Куплю` : `Продам`}
+                  span.ticket-card__label #{proposal.type === `offer` ? `Куплю` : `Продам`}
                   .ticket-card__categories
-                    each category in offer.categories
+                    each category in proposal.categories
                       a(href="#") #{category.name}
                   .ticket-card__header
                     h3.ticket-card__title
-                      a(href='#') #{offer.title}
+                      a(href='#') #{proposal.title}
                     p.ticket-card__price
-                      span.js-sum #{offer.sum.toLocaleString()}
+                      span.js-sum #{proposal.sum.toLocaleString()}
                       |  ₽
                 button.ticket-card__del.js-delete(type='button') Удалить

@@ -9,44 +9,45 @@ block content
         .tickets-list__header
           p.tickets-list__title Самое свежее
         ul
-          each offer in proposals
+          each proposal in proposals
             li.tickets-list__item
               .ticket-card.ticket-card--color01
                 .ticket-card__img
-                  img(src=`/img/${offer.picture}` alt=offer.title)
+                  img(src=`/img/${proposal.picture}` alt=proposal.title)
                 .ticket-card__info
-                  span.ticket-card__label #{offer.type === `offer` ? `Куплю` : `Продам`}
+                  span.ticket-card__label #{proposal.type === `offer` ? `Куплю` : `Продам`}
                   .ticket-card__categories
-                    a(href="#") #{offer.category}
+                    each category in proposal.categories
+                      a(href="#") #{category.name}
                   .ticket-card__header
                     h3.ticket-card__title
-                      a(href="#") #{offer.title}
+                      a(href="#") #{proposal.title}
                     p.ticket-card__price
-                      span.js-sum #{offer.sum}
+                      span.js-sum #{proposal.sum}
                       |  ₽
                   .ticket-card__desc
-                    p #{offer.description}
+                    p #{proposal.description}
     section.tickets-list
       h2.visually-hidden Самые обсуждаемые предложения
       .tickets-list__wrapper
         .tickets-list__header
           p.tickets-list__title Самые обсуждаемые
         ul
-          each offer in proposals
+          each proposal in proposals
             li.tickets-list__item
               .ticket-card.ticket-card--color01
                 .ticket-card__img
-                  img(src=`/img/${offer.picture}` alt=offer.title)
+                  img(src=`/img/${proposal.picture}` alt=proposal.title)
                 .ticket-card__info
-                  span.ticket-card__label #{offer.type === `offer` ? `Куплю` : `Продам`}
+                  span.ticket-card__label #{proposal.type === `offer` ? `Куплю` : `Продам`}
                   .ticket-card__categories
-                    each category in offer.categories
+                    each category in proposal.categories
                       a(href="#") #{category.name}
                   .ticket-card__header
                     h3.ticket-card__title
-                      a(href="#") #{offer.title}
+                      a(href="#") #{proposal.title}
                     p.ticket-card__price
-                      span.js-sum #{offer.sum}
+                      span.js-sum #{proposal.sum}
                       |  ₽
                   .ticket-card__desc
-                    p #{offer.description}
+                    p #{proposal.description}

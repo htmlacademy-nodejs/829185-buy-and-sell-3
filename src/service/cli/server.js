@@ -7,12 +7,13 @@ const {
   JSON_LIMIT
 } = require(`../../constants`);
 const DEFAULT_SERVER_PORT = 3000;
-const initAPI = require(`../api`);
+
 const {
   getLogger
 } = require(`../../logger/logger`);
 const logger = getLogger();
 const sequelize = require(`../../service/lib/sequelize`);
+const apiRoutes = require(`../api`);
 
 app.use(express.json({
   limit: JSON_LIMIT
@@ -40,8 +41,7 @@ module.exports = {
 
     const [customPort] = args;
     const serverPort = Number.parseInt(customPort, 10) || DEFAULT_SERVER_PORT;
-    const routes = initAPI(sequelize);
-    app.use(`/api`, routes);
+    app.use(`/api`, apiRoutes);
     app.use((req, res) => {
       logger.error(req.path);
       res.status(HTTP_CODES.NOT_FOUND).send(`Not found`);
