@@ -30,6 +30,9 @@ module.exports = {
   app,
   name: `--server`,
   async run(args) {
+    const [customPort] = args;
+    const serverPort = Number.parseInt(customPort, 10) || DEFAULT_SERVER_PORT;
+
     try {
       logger.info(`Trying to connect to database...`);
       await sequelize.authenticate();
@@ -38,9 +41,6 @@ module.exports = {
       process.exit(1);
     }
     logger.info(`Connection to database established`);
-
-    const [customPort] = args;
-    const serverPort = Number.parseInt(customPort, 10) || DEFAULT_SERVER_PORT;
     app.use(`/api`, apiRoutes);
     app.use((req, res) => {
       logger.error(req.path);

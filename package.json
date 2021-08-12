@@ -4,7 +4,7 @@
   "description": "Куплю. Продам",
   "main": "./src/service/service.js",
   "scripts": {
-    "start": "cross-env LOG_LEVEL=error node -r dotenv/config ./src/service/service.js --server",
+    "start": "cross-env LOG_LEVEL=error node -r dotenv/config ./src/service/service.js > ./src/service/logs/app.log 2> ./src/service/logs/error.log --server",
     "start::debug": "cross-env LOG_LEVEL=debug NODE_ENV=development node -r dotenv/config ./src/service/service.js > ./src/service/logs/app.log 2> ./src/service/logs/error.log --server",
     "test::rest": "jest",
     "lint": "eslint --ext .js src/",
