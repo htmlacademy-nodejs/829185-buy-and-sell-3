@@ -1,26 +1,52 @@
 'use strict';
 
+const express = require(`express`);
 const request = require(`supertest`);
-const {app} = require(`../cli/server`);
-const initAPI = require(`../api`);
+const Sequelize = require(`sequelize`);
+
+const initDB = require(`../lib/init-db`);
+const category = require(`./categories`);
+const DataService = require(`../../services/categories`);
+
 const {HTTP_CODES} = require(`../../constants`);
 
 const {
-  mockOffers
+  mockOffers,
+  mockCategories
 } = require(`./test_mocks`);
 
-const routes = initAPI(mockOffers);
+const createAPI = async () => {
+  const categories = mockCategories.map(({name}) => name);
+  const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
+  const app = express();
+  app.use(express.json());
 
-app.use(`/api`, routes);
+  await initDB(mockDB, {categories, offers: mockOffers});
+  category(app, new DataService(mockDB));
 
-describe(`Categories API end-points`, () => {
-  test(`When get /api/categories, response code should be 200`, async () => {
-    const res = await request(app).get(`/api/categories`);
-    expect(res.statusCode).toBe(HTTP_CODES.OK);
+  return app;
+};
+
+describe(`API returns category list`, () => {
+  let response; let app;
+
+  beforeAll(async () => {
+    app = await createAPI();
+    response = await request(app)
+      .get(`/categories`);
   });
 
-  test(`When get /api/categories, response body should be an array`, async () => {
-    const res = await request(app).get(`/api/categories`);
-    expect(Array.isArray(res.body)).toBeTruthy();
+  it(`Status code 200`, () => {
+    expect(response.statusCode).toBe(HTTP_CODES.OK);
   });
+
+  it(`Returns list of 12 categories`, () => {
+    expect(response.body.length).toBe(12);
+  });
+
+  it(`Category names are "Журналы", "Игры", "Животные"`,
+      () => expect(response.body.map((it) => it.name)).toEqual(
+          expect.arrayContaining([`Журналы`, `Игры`, `Животные`])
+      )
+  );
 });

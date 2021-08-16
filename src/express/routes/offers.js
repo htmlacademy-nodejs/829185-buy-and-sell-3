@@ -33,7 +33,7 @@ offersRouter.post(`/add`,
         type: body.action,
         description: body.comment,
         title: body[`ticket-name`],
-        category: body.category
+        categories: body.category
       };
 
       try {
@@ -57,6 +57,10 @@ offersRouter.get(`/edit/:offerId`, async (req, res) => {
 
   res.render(`ticket-edit`, {proposal, categories});
 });
-offersRouter.get(`/:id`, (req, res) => res.send(`/offers/:id ${req.params.id}`));
+offersRouter.get(`/:id`, async (req, res) => {
+  const {id} = req.params;
+  const proposal = await api.getOffer(id, true);
+  res.render(`ticket`, {proposal});
+});
 
 module.exports = offersRouter;

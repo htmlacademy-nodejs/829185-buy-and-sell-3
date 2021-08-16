@@ -7,15 +7,13 @@ const {
   JSON_LIMIT
 } = require(`../../constants`);
 const DEFAULT_SERVER_PORT = 3000;
-const initAPI = require(`../api`);
-const {
-  getMocks
-} = require(`../utils`);
+
 const {
   getLogger
 } = require(`../../logger/logger`);
 const logger = getLogger();
 const sequelize = require(`../../service/lib/sequelize`);
+const apiRoutes = require(`../api`);
 
 app.use(express.json({
   limit: JSON_LIMIT
@@ -32,6 +30,9 @@ module.exports = {
   app,
   name: `--server`,
   async run(args) {
+    const [customPort] = args;
+    const serverPort = Number.parseInt(customPort, 10) || DEFAULT_SERVER_PORT;
+
     try {
       logger.info(`Trying to connect to database...`);
       await sequelize.authenticate();
@@ -40,12 +41,7 @@ module.exports = {
       process.exit(1);
     }
     logger.info(`Connection to database established`);
-
-    const [customPort] = args;
-    const serverPort = Number.parseInt(customPort, 10) || DEFAULT_SERVER_PORT;
-    const mockData = await getMocks();
-    const routes = initAPI(mockData);
-    app.use(`/api`, routes);
+    app.use(`/api`, apiRoutes);
     app.use((req, res) => {
       logger.error(req.path);
       res.status(HTTP_CODES.NOT_FOUND).send(`Not found`);

@@ -28,8 +28,8 @@ block content
                   span Обязательное поле
               .ticket-form__row
                 select#category-field.form__select.js-multiple-select(name='category' data-label='Выбрать категорию публикации' multiple='')
-                  each category, i in categories
-                    option(value=index selected=proposal.category.includes(category)) #{category}
+                  each category in categories
+                    option(value=category.id selected=proposal.categories.includes(category)) #{category.name}
               .ticket-form__row
                 .form__field.form__field--price
                   input#price-field.js-field.js-price(type='number' name='price' min='1' value=proposal.sum required='')

@@ -6,8 +6,11 @@ const route = new Router();
 
 module.exports = (app, service) => {
   app.use(`/categories`, route);
-  route.get(`/`, (req, res) => {
-    const result = service.findAll();
-    return res.status(HTTP_CODES.OK).json(result);
+  route.get(`/`, async (req, res) => {
+    const {count} = req.query;
+    const categories = await service.findAll(count);
+
+    res.status(HTTP_CODES.OK)
+      .json(categories);
   });
 };

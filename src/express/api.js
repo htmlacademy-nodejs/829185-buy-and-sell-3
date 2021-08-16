@@ -17,20 +17,20 @@ class API {
     return response.data;
   }
 
-  getOffers() {
-    return this._load(`/offers`);
+  getOffers({comments} = {}) {
+    return this._load(`/offers`, {params: {comments}});
   }
 
   getOffer(id) {
     return this._load(`/offers/${id}`);
   }
 
-  search(query) {
-    return this._load(`/search`, {params: {query}});
+  search(search) {
+    return this._load(`/search`, {params: {search}});
   }
 
-  async getCategories() {
-    return this._load(`/categories`);
+  getCategories(count) {
+    return this._load(`/categories`, {params: {count}});
   }
 
   async createOffer(data) {
