@@ -3,10 +3,8 @@
 const Router = require(`express`);
 const {HTTP_CODES} = require(`../../constants`);
 const route = new Router();
-const {
-  newOfferValidator,
-  offerAttrValidator
-} = require(`../../validators/offerValidator`);
+const newOfferValidator = require(`../../validators/offerValidator`);
+const offerAttrValidator = require(`../../validators/offerAttrValidator`);
 const commentsValidator = require(`../../validators/commentsValidator`);
 
 module.exports = (app, offersService, commentsService) => {
@@ -15,11 +13,13 @@ module.exports = (app, offersService, commentsService) => {
   route.get(`/`, async (req, res) => {
     const {offset, limit, comments} = req.query;
     let result;
-    if (limit || offset) {
+
+    if (+limit || +offset) {
       result = await offersService.findPage({limit, offset});
     } else {
       result = await offersService.findAll(comments);
     }
+
     res.status(HTTP_CODES.OK).json(result);
   });
   route.get(`/:offerId`, async (req, res) => {
@@ -35,7 +35,6 @@ module.exports = (app, offersService, commentsService) => {
   });
   route.post(`/`, newOfferValidator, async (req, res) => {
     const offer = await offersService.create(req.body);
-
     return res.status(HTTP_CODES.CREATED).json(offer);
   });
   route.put(`/:offerId`, offerAttrValidator, async (req, res) => {

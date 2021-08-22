@@ -60,11 +60,14 @@ const getRandomSubarray = (items) => {
   return result;
 };
 
+const makeArray = (el) => Array.isArray(el) ? el : [el];
+
 module.exports = {
   shuffle,
   getRandomInt,
   getPictureFileName,
   correctNounEnding,
   getMocks,
-  getRandomSubarray
+  getRandomSubarray,
+  makeArray
 };

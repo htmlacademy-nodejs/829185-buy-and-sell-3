@@ -36,9 +36,10 @@ block content
                   span Обязательное поле
                 .form__switch.switch
                   .switch__item
-                    input#buy-field.visually-hidden(type='radio' name='action' value='buy')
+                    input#buy-field.visually-hidden(type='radio' name='action' value='offer')
                     label.switch__button(for='buy-field') Куплю
                   .switch__item
-                    input#sell-field.visually-hidden(type='radio' name='action' value='sell')
+                    input#sell-field.visually-hidden(type='radio' name='action' value='sale')
                     label.switch__button(for='sell-field') Продам
+            +errorMessage(error)
             button.form__button.btn.btn--medium.js-button(type='submit' disabled='') Опубликовать
