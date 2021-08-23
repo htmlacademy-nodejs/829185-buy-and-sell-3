@@ -29,10 +29,10 @@ block content
                 span #{formatDate(proposal.createdAt)}
               p
                 b Автор:
-                a(href="#") Денис Шкатулкин
+                a(href=`/user/${proposal.user.id}`) #{proposal.user.name}
               p
                 b Контакты:
-                a(href="mailto:shkatulkin@ya.ru") shkatulkin@ya.ru
+                a(href=`${proposal.user.email}`) #{proposal.user.email}
             ul.ticket__tags
               each category in proposal.categories
                 li

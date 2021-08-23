@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const upload = require(`../middlewares/upload`);
 const mainRouter = new Router();
 const api = require(`../api`).getAPI();
 const OFFERS_PER_PAGE = 8;
@@ -57,5 +58,26 @@ mainRouter.get(`/new-ticket`, (req, res) => res.render(`new-ticket.pug`));
 mainRouter.get(`/sign-up`, (req, res) => res.render(`sign-up.pug`));
 mainRouter.get(`/ticket`, (req, res) => res.render(`ticket.pug`));
 mainRouter.get(`/ticket-edit`, (req, res) => res.render(`ticket-edit.pug`));
+mainRouter.get(`/register`, (req, res) => {
+  const {error} = req.query;
+  res.render(`sign-up`, {error});
+});
+
+mainRouter.post(`/register`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
+  const userData = {
+    avatar: file && file.filename,
+    name: body[`user-name`],
+    email: body[`user-email`],
+    password: body[`user-password`],
+    passwordRepeated: body[`user-password-again`]
+  };
+  try {
+    await api.createUser(userData);
+    res.redirect(`/login`);
+  } catch (error) {
+    res.redirect(`/register?error=${encodeURIComponent(error.response.data)}`, {userData});
+  }
+});
 
 module.exports = mainRouter;

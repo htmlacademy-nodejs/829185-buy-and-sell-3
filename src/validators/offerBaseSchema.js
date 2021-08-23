@@ -9,6 +9,7 @@ const maxDescriptionLength = 1000;
 const minSumValue = 100;
 
 const offerBaseSchema = Joi.object({
+  user: Joi.string().email(),
   categories: Joi.array().items(
       Joi.number().integer().positive()
   ).min(minCategoryCount),

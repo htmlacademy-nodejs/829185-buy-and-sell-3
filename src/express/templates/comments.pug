@@ -20,9 +20,9 @@ block content
                 li.js-card
                   .comment-card
                     .comment-card__header
-                      a.comment-card__avatar.avatar(href="#")
-                        img(src="/img/avatar03.jpg" srcset="/img/avatar03@2x.jpg 2x" alt="Аватар пользователя")
-                      p.comment-card__author Александр Бурый
+                      a.comment-card__avatar.avatar(href=`/user/${comment.user.id}`)
+                        img(src=`/img/${comment.user.avatar}` srcset=`/img/${comment.user.avatar} 2x` alt="Аватар пользователя")
+                      p.comment-card__author #{comment.user.name}
                     .comment-card__content
                       p
                         | #{comment.name}

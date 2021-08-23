@@ -12,13 +12,14 @@ const {HTTP_CODES} = require(`../../constants`);
 
 const {
   mockOffers,
-  mockCategories
+  mockCategories,
+  users
 } = require(`./test_mocks`);
 
 const createAPI = async () => {
   const categories = mockCategories.map(({name}) => name);
   const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
-  await initDB(mockDB, {categories, offers: mockOffers});
+  await initDB(mockDB, {categories, offers: mockOffers, users});
   const app = express();
   app.use(express.json());
   search(app, new DataService(mockDB));

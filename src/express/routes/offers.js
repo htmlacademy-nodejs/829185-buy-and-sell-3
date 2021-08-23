@@ -62,6 +62,7 @@ offersRouter.get(`/:id`, async (req, res) => {
   const {id} = req.params;
   const {error} = req.query;
   const proposal = await api.getOffer(id, true);
+
   res.render(`ticket`, {proposal, error});
 });
 offersRouter.post(`/:id/comments`, async (req, res) => {

@@ -7,6 +7,7 @@ class OfferService {
     this._Offer = sequelize.models.Offer;
     this._Comment = sequelize.models.Comment;
     this._Category = sequelize.models.Category;
+    this._User = sequelize.models.User;
   }
 
   async create(offerData) {
@@ -24,16 +25,47 @@ class OfferService {
 
   async findAll(needComments) {
 
-    const include = [Alias.CATEGORIES];
+    const include = [
+      Alias.CATEGORIES,
+      {
+        model: this._User,
+        as: Alias.USER,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
+      }
+    ];
+
     if (needComments) {
-      include.push(Alias.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Alias.COMMENTS,
+        include: [
+          {
+            model: this._User,
+            as: Alias.USER,
+            attributes: {
+              exclude: [`passwordHash`]
+            }
+          }
+        ]
+      });
     }
     const offers = await this._Offer.findAll({include});
     return offers.map((item) => item.get());
   }
 
   findOne(id) {
-    return this._Offer.findByPk(id, {include: [Alias.CATEGORIES]});
+    return this._Offer.findByPk(id, {include: [
+      Alias.CATEGORIES,
+      {
+        model: this._User,
+        as: Alias.USER,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
+      }
+    ]});
   }
 
   async update(id, offer) {
