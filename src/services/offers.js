@@ -23,6 +23,7 @@ class OfferService {
   }
 
   async findAll(needComments) {
+
     const include = [Alias.CATEGORIES];
     if (needComments) {
       include.push(Alias.COMMENTS);

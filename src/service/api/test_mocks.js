@@ -96,8 +96,7 @@ const newValidOffer = {
   "picture": `item06.jpg`,
   "title": `Продам отличную подборку фильмов на VHS.`,
   "type": `offer`,
-  "sum": 96624,
-  "comments": []
+  "sum": 96624
 };
 
 const notExistingOffer = {
