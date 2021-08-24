@@ -12,7 +12,8 @@ const {HTTP_CODES} = require(`../../constants`);
 
 const {
   mockOffers,
-  mockCategories
+  mockCategories,
+  users
 } = require(`./test_mocks`);
 
 const createAPI = async () => {
@@ -21,7 +22,7 @@ const createAPI = async () => {
   const app = express();
   app.use(express.json());
 
-  await initDB(mockDB, {categories, offers: mockOffers});
+  await initDB(mockDB, {categories, offers: mockOffers, users});
   category(app, new DataService(mockDB));
 
   return app;

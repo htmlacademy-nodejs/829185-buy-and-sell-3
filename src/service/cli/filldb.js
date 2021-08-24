@@ -20,6 +20,7 @@ const {
   correctNounEnding,
   getRandomSubarray
 } = require(`../utils`);
+const passwordUtils = require(`../lib/password`);
 
 const logger = getLogger();
 
@@ -39,8 +40,9 @@ const readContent = async (filePath) => {
 };
 
 const generateOffers = (options) => {
-  const {countOffer, titles, categories, sentences, comments} = options;
+  const {countOffer, titles, categories, sentences, comments, users} = options;
   return Array(countOffer).fill({}).map(() => ({
+    user: users[getRandomInt(0, users.length - 1)].email,
     description: shuffle(sentences).slice(1, 5).join(` `),
     picture: getPictureFileName(getRandomInt(PIC_RESTRICTIONS.MIN, PIC_RESTRICTIONS.MAX)),
     title: titles[getRandomInt(0, titles.length - 1)],
@@ -48,7 +50,8 @@ const generateOffers = (options) => {
     sum: getRandomInt(SUM_RESTRICTIONS.MIN, SUM_RESTRICTIONS.MAX),
     categories: getRandomSubarray(categories),
     comments: Array(getRandomInt(1, MAXIMUM_COMMENTS)).fill({}).map(() => ({
-      name: shuffle(comments).slice(1, getRandomInt(1, comments.length)).join(` `)
+      user: users[getRandomInt(0, users.length - 1)].email,
+      name: shuffle(comments).slice(0, getRandomInt(0, comments.length - 1)).join(` `)
     }))
   })
   );
@@ -73,14 +76,28 @@ module.exports = {
     const titles = await readContent(FILE_TITLES_PATH);
     const categories = await readContent(FILE_CATEGORIES_PATH);
     const comments = await readContent(FILE_COMMENTS_PATH);
+    const users = [
+      {
+        name: `Иван Иванов`,
+        email: `ivanov@example.com`,
+        passwordHash: await passwordUtils.hash(`ivanov`),
+        avatar: `avatar01.jpg`
+      },
+      {
+        name: `Пётр Петров`,
+        email: `petrov@example.com`,
+        passwordHash: await passwordUtils.hash(`petrov`),
+        avatar: `avatar02.jpg`
+      }
+    ];
 
     if (countOffer > MOCKS_RESTRICTIONS.MAX) {
       console.error(chalk.red(`Не больше ${MOCKS_RESTRICTIONS.MAX} ${correctNounEnding(MOCKS_RESTRICTIONS.MAX, [`объявление`, `объявления`, `объявлений`])}`));
     } else {
-      const options = {countOffer, titles, categories, sentences, comments};
+      const options = {countOffer, titles, categories, sentences, comments, users};
       const offers = generateOffers(options);
 
-      await initDB(sequelize, {categories, offers});
+      await initDB(sequelize, {categories, offers, users});
     }
 
     return console.info(chalk.green(`Operation success. Database is created.`));

@@ -47,8 +47,16 @@ class API {
       data
     });
   }
+
   createComment(id, data) {
     return this._load(`/offers/${id}/comments`, {
+      method: HTTP_METHODS.POST,
+      data
+    });
+  }
+
+  async createUser(data) {
+    return this._load(`/user`, {
       method: HTTP_METHODS.POST,
       data
     });

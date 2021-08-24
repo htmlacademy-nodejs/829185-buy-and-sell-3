@@ -20,13 +20,14 @@ const {
   inValidOfferNewAttr,
   validNewComment,
   invalidNewComment,
-  mockCategories
+  mockCategories,
+  users
 } = require(`./test_mocks`);
 
 const createAPI = async () => {
   const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
   const categories = mockCategories.map(({name}) => name);
-  await initDB(mockDB, {categories, offers: mockOffers});
+  await initDB(mockDB, {categories, offers: mockOffers, users});
   const app = express();
   app.use(express.json());
   offer(app, new OffersDataService(mockDB), new CommentsDataService(mockDB));

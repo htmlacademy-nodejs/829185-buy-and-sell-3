@@ -5,6 +5,7 @@ const Joi = require(`joi`);
 const offerBaseSchema = require(`./offerBaseSchema`);
 
 const schema = offerBaseSchema.keys({
+  user: Joi.required(),
   categories: Joi.required(),
   title: Joi.required(),
   description: Joi.required(),
