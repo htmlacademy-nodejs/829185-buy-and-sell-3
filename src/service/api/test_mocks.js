@@ -21,7 +21,7 @@ const users = [
   {
     name: `Иван Иванов`,
     email: `ivanov@example.com`,
-    passwordHash: `ivanov`,
+    passwordHash: `$2b$10$lZ2QE6F48S/c5eLmR32M6OLZkRzYAVo/B3OM4goD/N1Js5lrt5SRS`,
     avatar: `avatar01.jpg`
   },
   {
