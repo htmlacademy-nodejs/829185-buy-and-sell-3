@@ -61,6 +61,13 @@ class API {
       data
     });
   }
+
+  auth(email, password) {
+    return this._load(`/user/auth`, {
+      method: HTTP_METHODS.POST,
+      data: {email, password}
+    });
+  }
 }
 
 const port = process.env.API_PORT || DEFAULT_API_PORT;

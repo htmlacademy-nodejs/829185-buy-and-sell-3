@@ -51,4 +51,5 @@ block content
                       |  ₽
                   .ticket-card__desc
                     p #{proposal.description}
-    +pagination(page, totalPages, 2, `?`)
+    if (totalPages > 1)
+      +pagination(page, totalPages, 2, `?`)

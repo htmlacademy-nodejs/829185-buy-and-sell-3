@@ -22,7 +22,6 @@ module.exports = (app, service) => {
   route.post(`/auth`, async (req, res) => {
     const {email, password} = req.body;
     const user = await service.findByEmail(email);
-
     if (!user) {
       res.status(HTTP_CODES.UNAUTHORIZED).send(`Email is incorrect`);
       return;
@@ -36,5 +35,5 @@ module.exports = (app, service) => {
     } else {
       res.status(HTTP_CODES.UNAUTHORIZED).send(`Password is incorrect`);
     }
-  })
+  });
 };
