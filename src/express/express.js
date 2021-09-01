@@ -9,7 +9,8 @@ const UPLOAD_DIR = `upload`;
 const {
   myRoutes,
   mainRoutes,
-  offersRoutes
+  offersRoutes,
+  loginRoutes
 } = require(`./routes`);
 const sequelize = require(`../service/lib/sequelize`);
 const session = require(`express-session`);
@@ -39,6 +40,7 @@ app.use(session({
 app.use(express.urlencoded({extended: false}));
 app.use(`/offers`, offersRoutes);
 app.use(`/my`, myRoutes);
+app.use(`/login`, loginRoutes);
 app.use(`/`, mainRoutes);
 
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));

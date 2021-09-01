@@ -23,22 +23,9 @@ mainRouter.get(`/`, async (req, res) => {
 
   res.render(`main`, {proposals: offers, categories, page, totalPages, user});
 });
-mainRouter.get(`/login`, (req, res) => {
-  const {error} = req.query;
-  res.render(`login`, {error});
-});
 mainRouter.get(`/logout`, (req, res) => {
   delete req.session.user;
   res.redirect(`/`);
-});
-mainRouter.post(`/login`, async (req, res) => {
-  try {
-    const user = await api.auth(req.body[`user-email`], req.body[`user-password`]);
-    req.session.user = user;
-    res.redirect(`/`);
-  } catch (error) {
-    res.redirect(`/login?error=${encodeURIComponent(error.response.data)}`);
-  }
 });
 mainRouter.get(`/search`, async (req, res) => {
   const {user} = req.session;
@@ -68,7 +55,6 @@ mainRouter.get(`/my-tickets`, async (req, res) => {
   res.render(`my-tickets`, {proposals, user});
 });
 mainRouter.get(`/new-ticket`, (req, res) => res.render(`new-ticket.pug`));
-mainRouter.get(`/sign-up`, (req, res) => res.render(`sign-up.pug`));
 mainRouter.get(`/ticket`, (req, res) => res.render(`ticket.pug`));
 mainRouter.get(`/ticket-edit`, (req, res) => res.render(`ticket-edit.pug`));
 mainRouter.get(`/register`, (req, res) => {
