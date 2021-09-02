@@ -3,7 +3,7 @@ extends layout.pug
 block content
   main.page-content
     section.login
-      form.login__form.form(action='/user' method='post' enctype='multipart/form-data')
+      form.login__form.form(action='/login' method='post' autocomplete='off')
         .login__title
           a.login__link(href='/register') Регистрация
           h2 Вход

@@ -19,7 +19,6 @@ module.exports = (service) => async (req, res, next) => {
     return res.status(HTTP_CODES.BAD_REQUEST)
       .send(error.details.map((err) => err.message).join(`\n`));
   }
-
   const userByEmail = await service.findByEmail(req.body.email);
 
   if (userByEmail) {

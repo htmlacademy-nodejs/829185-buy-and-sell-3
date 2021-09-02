@@ -7,6 +7,7 @@ block content
         h1.ticket-form__title Новая публикация
         .ticket-form__tile
           form.ticket-form__form.form(action='/offers/add' method='post' enctype='multipart/form-data' autocomplete='off')
+            input(type="hidden" name="_csrf" value=csrfToken)
             .ticket-form__avatar-container.js-preview-container
               .ticket-form__avatar.js-preview
               .ticket-form__field-avatar

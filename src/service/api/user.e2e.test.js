@@ -102,4 +102,54 @@ describe(`User API end-points`, () => {
         .expect(HTTP_CODES.BAD_REQUEST);
     });
   });
+
+  describe(`API authenticate user if data is valid`, () => {
+    const validAuthData = {
+      email: `ivanov@example.com`,
+      password: `ivanov`
+    };
+
+    let response;
+
+    beforeAll(async () => {
+      const app = await createAPI();
+      response = await request(app)
+        .post(`/user/auth`)
+        .send(validAuthData);
+    });
+
+    test(`Status code is 200`, () => expect(response.statusCode).toBe(HTTP_CODES.OK));
+
+    test(`User name is Иван Иванов`, () => expect(response.body.name).toBe(`Иван Иванов`));
+  });
+
+  describe(`API refuses to authenticate user if data is invalid`, () => {
+    let app;
+
+    beforeAll(async () => {
+      app = await createAPI();
+    });
+
+    test(`If email is incorrect status is 401`, async () => {
+      const badAuthData = {
+        email: `not-exist@example.com`,
+        password: `petrov`
+      };
+      await request(app)
+        .post(`/user/auth`)
+        .send(badAuthData)
+        .expect(HTTP_CODES.UNAUTHORIZED);
+    });
+
+    test(`If password doesn't match status is 401`, async () => {
+      const badAuthData = {
+        email: `petrov@example.com`,
+        password: `ivanov`
+      };
+      await request(app)
+        .post(`/user/auth`)
+        .send(badAuthData)
+        .expect(HTTP_CODES.UNAUTHORIZED);
+    });
+  });
 });

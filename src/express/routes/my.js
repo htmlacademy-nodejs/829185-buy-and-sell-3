@@ -3,16 +3,18 @@
 const {Router} = require(`express`);
 const myRouter = new Router();
 const api = require(`../api`).getAPI();
+const auth = require(`../middlewares/auth`);
 
-myRouter.get(`/`, async (req, res) => {
+myRouter.get(`/`, auth, async (req, res) => {
   const proposals = await api.getOffers();
-
-  res.render(`my-tickets`, {proposals});
+  const {user} = req.session;
+  res.render(`my-tickets`, {proposals, user});
 });
-myRouter.get(`/comments`, async (req, res) => {
+myRouter.get(`/comments`, auth, async (req, res) => {
   let proposals = await api.getOffers({comments: true});
   proposals = proposals.filter(({comments}) => comments.length);
-  res.render(`comments`, {proposals: proposals.slice(0, 3)});
+  const {user} = req.session;
+  res.render(`comments`, {proposals: proposals.slice(0, 3), user});
 });
 
 module.exports = myRouter;
